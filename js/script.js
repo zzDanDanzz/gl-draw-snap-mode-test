@@ -40,14 +40,35 @@ function initializeGlDraw() {
   const draw = new MapboxDraw({
     modes: {
       ...MapboxDraw.modes,
+      draw_point: mapboxGlDrawSnapMode.SnapPointMode,
       draw_polygon: mapboxGlDrawSnapMode.SnapPolygonMode,
+      draw_line_string: mapboxGlDrawSnapMode.SnapLineMode,
+      direct_select: mapboxGlDrawSnapMode.SnapDirectSelect,
     },
     styles: mapboxGlDrawSnapMode.SnapModeDrawStyles,
     userProperties: true,
+    snap: false,
     guides: false,
   });
 
   map.addControl(draw, "top-right");
+
+  const SnapOptionsBar = new ExtendDrawBarCheckboxes({
+    draw: draw,
+    checkboxes: [
+      {
+        on: "change",
+        action: (e) => {
+          draw.options.snap = e.target.checked;
+        },
+        classes: ["snap_mode", "snap"],
+        title: "Snap when Draw",
+        // initialState: "checked",
+      },
+    ],
+  });
+
+  map.addControl(SnapOptionsBar, "top-right");
 }
 
 initializeMap();
